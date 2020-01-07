@@ -181,7 +181,7 @@
   nil)
 
 (deftest thereis.finally.2
-    (with-output-to-string (*standard-output*) 
+    (with-output-to-string (*standard-output*)
       (iter (repeat 3) (thereis nil) (finally (princ "hi"))))
   "hi")
 
@@ -194,7 +194,7 @@
   4)
 
 (deftest thereis.finally-protected.2
-    (with-output-to-string (*standard-output*) 
+    (with-output-to-string (*standard-output*)
       (iter (repeat 3) (thereis 4) (finally-protected (princ "hi"))))
   "hi")
 
@@ -462,7 +462,7 @@
           (until (zerop rest))
           (finally (return (values sum product))))
   10 30)
-          
+
 (deftest until.2
     (iter (for i in-sequence '#(1 2 -3 6))
           (until (zerop (sum i into x)))
@@ -889,9 +889,15 @@
           (generate i upfrom 1)
           (if el (collect (cons el (next i)))))
   #.(iter (for el in '(a b c d))
+<<<<<<< HEAD
           (for i upfrom 1)
           (if el (collect (cons el i)))))
   
+=======
+	  (for i upfrom 1)
+	  (if el (collect (cons el i)))))
+
+>>>>>>> Add tests for coverage.
 
 (deftest for.previous.in
     (iter (for el in '(1 2 3 4))
@@ -1323,7 +1329,7 @@
             (iter (for j below (array-dimension ar 1))
                   (collect (aref ar i j)))))
   nil)
-  
+
 (deftest subblocks.2
     (let ((ar #2a((1 2 3)
                   (4 5 6)
@@ -1349,6 +1355,16 @@
     (iter (for i index-of-sequence "ab")
           (collecting ((lambda(n) (cons 1 n)) i)))
   ((1 . 0) (1 . 1)))
+
+(deftest lambda.2
+    (iter (for x in '(1 2))
+          (summing ((lambda (&key ((:y y))) y) :y (1+ x))))
+  5)
+
+(deftest let*.1
+    (iter (for x in '(1 2))
+          (let* (y) (collecting (cons x y))))
+  ((1) (2)))
 
 (deftest type.1
     (iter (for el in '(1 2 3 4 5))
@@ -1617,6 +1633,7 @@
 (deftest defclause-sequence
     (progn
       (iter:defclause-sequence IN-WHOLE-VECTOR.seq INDEX-OF-WHOLE-VECTOR
+<<<<<<< HEAD
         :access-fn 'aref
         :size-fn '#'(lambda (v) (array-dimension v 0))
         :sequence-type 'vector
@@ -1625,6 +1642,16 @@
           "Elements of a vector, disregarding fill-pointer"
         :index-doc-string 
           "Indices of vector, disregarding fill-pointer")
+=======
+	:access-fn 'aref
+	:size-fn '#'(lambda (v) (array-dimension v 0))
+	:sequence-type 'vector
+	:element-type t
+	:element-doc-string
+	  "Elements of a vector, disregarding fill-pointer"
+	:index-doc-string
+	  "Indices of vector, disregarding fill-pointer")
+>>>>>>> Add tests for coverage.
       t)
   t)
 
@@ -1666,6 +1693,7 @@
     (defmacro-clause (FINDING expr MAXING func &optional INTO var)
       "Iterate paper demo example"
       (let ((max-val (gensym "MAX-VAL"))
+<<<<<<< HEAD
             (temp1 (gensym "EL"))
             (temp2 (gensym "VAL"))
             (winner (or var iterate::*result-var*)))
@@ -1677,6 +1705,19 @@
             (when (or (null ,max-val) (> ,temp2 ,max-val))
               (setq ,winner ,temp1 ,max-val ,temp2)))
           #|(finally (return ,winner))|# )))
+=======
+	    (temp1 (gensym "EL"))
+	    (temp2 (gensym "VAL"))
+	    (winner (or var iterate::*result-var*)))
+	`(progn
+	  (with ,max-val = nil)
+	  (with ,winner = nil)
+	  (let* ((,temp1 ,expr)
+		 (,temp2 (funcall ,func ,temp1)))
+	    (when (or (null ,max-val) (> ,temp2 ,max-val))
+	      (setq ,winner ,temp1 ,max-val ,temp2)))
+	  #|(finally (return ,winner))|# )))
+>>>>>>> Add tests for coverage.
   (FINDING expr MAXING func &optional INTO var))
 
 (deftest maxing.1
@@ -1766,7 +1807,7 @@
             (summing alpha)))
   2)
 
-;;; Tests for bugs. 
+;;; Tests for bugs.
 ;; when these start failing, I have done something right (-:
 
 ;; The walker ignores function bindings,
@@ -1936,6 +1977,7 @@
                (leave 2))))
   2)
 
+<<<<<<< HEAD
 #+ccl
 (deftest ccl-compiler-let
     (catch 'compiler-warned
@@ -1960,5 +2002,54 @@
           (when def t))))
   t)
 
+=======
+(deftest top-level-atom.1
+    (iter 17 (for x in '(1 2)) (summing x))
+  3)
+
+(deftest with-nil
+    (iter (with nil) (return 16))
+  16)
+
+(deftest clause-error.1
+    (values (ignore-errors
+              (iter (for x in '(a b)) ("foo"))
+              t))
+  nil)
+
+(deftest clause-error.2
+    (values (ignore-errors (iter (for x in '(a b)) (when x (declare))) t))
+  nil)
+
+(deftest clause-error.3
+    (values (ignore-errors (iter (for)) t))
+  nil)
+
+(deftest clause-error.4
+    (values (ignore-errors (iter (for x :foo nil)) t))
+  nil)
+
+(deftest clause-error.5
+    (values
+     (ignore-errors
+       (iter (repeat 0)
+             (accumulating 1 by #'cons initial-value 2)
+             (accumulating 1 by #'cons initial-value 3))
+       t))
+  nil)
+
+(deftest clause-error.6
+    (values (ignore-errors (iter (for (the symbol (x)) in '((a)))
+                                 (collecting x))
+                           t))
+  nil)
+
+(deftest clause-error.7
+    (values
+     (ignore-errors
+       (iter (for (x x) in '((1 2) (3 4))) (collecting x))
+       t))
+  nil)
+>>>>>>> Add tests for coverage.
 
 ;;; eof
