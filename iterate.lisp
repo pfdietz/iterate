@@ -335,7 +335,6 @@
     (prog2 .		    walk-cdr)
     (psetq . 		    walk-setq)))
 
-
 ;;; For clauses that are "special" in the sense that they don't conform to the
 ;;; keyword-argument syntax of Iterate clauses.
 
@@ -811,14 +810,16 @@ Evaluate (iterate:display-iterate-clauses) for an overview of clauses"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Special forms.
 
-(defun special-form? (symbol)
-  ;; special-operator-p doesn't work in Lucid--it returns NIL for let, for
-  ;; example.  Plus, we want to catch Iterate special clauses.
-  (assoc symbol *special-form-alist*))
+;; Add a generic lookup function so applications can extend
+;; the walker for specific macros
+(defgeneric special-form? (symbol)
+  (:documentation "Return the (SYM . HANDLER) pair for sym.")
+  (:method ((symbol t))
+    (assoc symbol *special-form-alist*)))
 
 (defun walk-special-form (form)
   (let ((*clause* form)
-	(func (cdr (assoc (car form) *special-form-alist*))))
+	(func (cdr (special-form? (car form)))))
     (if (null func)    ; there's nothing to transform
 	(list form)
 	(apply func form))))
@@ -1028,7 +1029,6 @@ Evaluate (iterate:display-iterate-clauses) for an overview of clauses"
 			      (if ,var ,var (cond ,@(cdr stuff)))))
 			  `(if ,test (progn ,@thens) (cond ,@(cdr stuff))))))
 	(walk if-form))))
-			    
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
