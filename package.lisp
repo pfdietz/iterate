@@ -8,6 +8,8 @@
 (defpackage #:iterate
   (:use #:cl)
   (:nicknames #:iter)
+  (:intern #:walk-cdr #:walk #:walk-case #:special-form? #:walk-list-nconcing
+           #:return-code-modifying-body #:walk-arglist)
   (:export #:iterate #:iter #:display-iterate-clauses
 	   #:defsynonym #:dsetq #:declare-variables
 	   #:defmacro-clause #:defmacro-driver #:defclause-sequence
@@ -37,6 +39,7 @@
 
 (defpackage :iterate/internal
   (:use :cl :iterate)
-  (:import-from :iterate :walk-cdr :walk-case :special-form?)
-  (:export :walk :walk-list-nconcing :walk-cdr :special-form?
-           :return-code-modifying-body))
+  (:import-from #:iterate #:walk #:walk-cdr #:walk-case #:special-form?
+                #:walk-list-nconcing #:return-code-modifying-body #:walk-arglist)
+  (:export #:walk #:walk-cdr #:walk-case #:special-form?
+           #:walk-list-nconcing #:return-code-modifying-body #:walk-arglist))
