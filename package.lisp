@@ -37,7 +37,7 @@
 ;;; Export of internal symbols needed for extending iterate, but
 ;;; not part of the normal interface to iterate
 
-(defpackage :iterate/internal
+(defpackage :iterate-internal
   (:use :cl :iterate)
   (:import-from #:iterate #:walk #:walk-cdr #:walk-case #:special-form?
                 #:walk-list-nconcing #:return-code-modifying-body #:walk-arglist)
