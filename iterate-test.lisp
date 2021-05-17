@@ -889,15 +889,8 @@
           (generate i upfrom 1)
           (if el (collect (cons el (next i)))))
   #.(iter (for el in '(a b c d))
-<<<<<<< HEAD
           (for i upfrom 1)
           (if el (collect (cons el i)))))
-  
-=======
-	  (for i upfrom 1)
-	  (if el (collect (cons el i)))))
-
->>>>>>> Add tests for coverage.
 
 (deftest for.previous.in
     (iter (for el in '(1 2 3 4))
@@ -1633,7 +1626,6 @@
 (deftest defclause-sequence
     (progn
       (iter:defclause-sequence IN-WHOLE-VECTOR.seq INDEX-OF-WHOLE-VECTOR
-<<<<<<< HEAD
         :access-fn 'aref
         :size-fn '#'(lambda (v) (array-dimension v 0))
         :sequence-type 'vector
@@ -1642,16 +1634,6 @@
           "Elements of a vector, disregarding fill-pointer"
         :index-doc-string 
           "Indices of vector, disregarding fill-pointer")
-=======
-	:access-fn 'aref
-	:size-fn '#'(lambda (v) (array-dimension v 0))
-	:sequence-type 'vector
-	:element-type t
-	:element-doc-string
-	  "Elements of a vector, disregarding fill-pointer"
-	:index-doc-string
-	  "Indices of vector, disregarding fill-pointer")
->>>>>>> Add tests for coverage.
       t)
   t)
 
@@ -1693,7 +1675,6 @@
     (defmacro-clause (FINDING expr MAXING func &optional INTO var)
       "Iterate paper demo example"
       (let ((max-val (gensym "MAX-VAL"))
-<<<<<<< HEAD
             (temp1 (gensym "EL"))
             (temp2 (gensym "VAL"))
             (winner (or var iterate::*result-var*)))
@@ -1705,19 +1686,6 @@
             (when (or (null ,max-val) (> ,temp2 ,max-val))
               (setq ,winner ,temp1 ,max-val ,temp2)))
           #|(finally (return ,winner))|# )))
-=======
-	    (temp1 (gensym "EL"))
-	    (temp2 (gensym "VAL"))
-	    (winner (or var iterate::*result-var*)))
-	`(progn
-	  (with ,max-val = nil)
-	  (with ,winner = nil)
-	  (let* ((,temp1 ,expr)
-		 (,temp2 (funcall ,func ,temp1)))
-	    (when (or (null ,max-val) (> ,temp2 ,max-val))
-	      (setq ,winner ,temp1 ,max-val ,temp2)))
-	  #|(finally (return ,winner))|# )))
->>>>>>> Add tests for coverage.
   (FINDING expr MAXING func &optional INTO var))
 
 (deftest maxing.1
@@ -1977,7 +1945,6 @@
                (leave 2))))
   2)
 
-<<<<<<< HEAD
 #+ccl
 (deftest ccl-compiler-let
     (catch 'compiler-warned
@@ -2002,7 +1969,6 @@
           (when def t))))
   t)
 
-=======
 (deftest top-level-atom.1
     (iter 17 (for x in '(1 2)) (summing x))
   3)
@@ -2050,6 +2016,5 @@
        (iter (for (x x) in '((1 2) (3 4))) (collecting x))
        t))
   nil)
->>>>>>> Add tests for coverage.
 
 ;;; eof
